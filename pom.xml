@@ -40,6 +40,13 @@
             <version>${assertj.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- AssertJ Swing -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-swing-junit</artifactId>
+            <version>3.17.1</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
@@ -159,7 +166,7 @@
                                         <env>
                                             <MYSQL_ROOT_PASSWORD>rootpwd</MYSQL_ROOT_PASSWORD>
                                             <MYSQL_DATABASE>expensesdb</MYSQL_DATABASE>
-                                            <MYSQL_USER=user</MYSQL_USER>
+                                            <MYSQL_USER>user</MYSQL_USER>
                                             <MYSQL_PASSWORD>userpwd</MYSQL_PASSWORD>
                                         </env>
                                         <ports>
