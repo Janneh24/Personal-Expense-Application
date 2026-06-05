@@ -10,6 +10,8 @@ import java.util.List;
 
 public class ExpenseService {
 
+    private static final String CATEGORY_NAME_ERROR = "Category name cannot be null or empty";
+
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
 
@@ -54,7 +56,7 @@ public class ExpenseService {
 
     public Category addCategory(Category category) {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
+            throw new IllegalArgumentException(CATEGORY_NAME_ERROR);
         }
         return categoryRepository.save(category);
     }

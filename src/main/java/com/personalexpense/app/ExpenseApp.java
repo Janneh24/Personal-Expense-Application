@@ -7,6 +7,10 @@ import com.personalexpense.view.ExpenseSwingView;
 import javax.swing.SwingUtilities;
 
 public class ExpenseApp {
+    private ExpenseApp() {
+        // Utility class
+    }
+
     public static void main(String[] args) {
         String host = System.getProperty("db.host", "localhost");
         int port = Integer.parseInt(System.getProperty("db.port", "3306"));

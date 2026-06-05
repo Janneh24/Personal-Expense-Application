@@ -28,21 +28,21 @@ public class ExpenseSwingView extends JFrame {
 
     private final transient ExpenseService expenseService;
 
-    private JTable expenseTable;
-    private DefaultTableModel tableModel;
-    private JTextField descriptionField;
-    private JTextField amountField;
-    private JTextField dateField;
-    private JButton addButton;
-    private JButton updateButton;
-    private JButton deleteButton;
-    private JComboBox<Category> categoryCombo;
-    private JButton addCategoryButton;
-    private JButton assignCategoryButton;
-    private JTextField categoryNameField;
-    private JList<Category> categoryList;
-    private DefaultListModel<Category> categoryListModel;
-    private JLabel errorLabel;
+    private transient JTable expenseTable;
+    private transient DefaultTableModel tableModel;
+    private transient JTextField descriptionField;
+    private transient JTextField amountField;
+    private transient JTextField dateField;
+    private transient JButton addButton;
+    private transient JButton updateButton;
+    private transient JButton deleteButton;
+    private transient JComboBox<Category> categoryCombo;
+    private transient JButton addCategoryButton;
+    private transient JButton assignCategoryButton;
+    private transient JTextField categoryNameField;
+    private transient JList<Category> categoryList;
+    private transient DefaultListModel<Category> categoryListModel;
+    private transient JLabel errorLabel;
 
     @Inject
     public ExpenseSwingView(ExpenseService expenseService) {
@@ -247,7 +247,7 @@ public class ExpenseSwingView extends JFrame {
             expenseService.addCategoryToExpense(expenseId, selectedCategory.getId());
             refreshCategoryList();
             clearError();
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             showError(ex.getMessage());
         }
     }
@@ -264,7 +264,7 @@ public class ExpenseSwingView extends JFrame {
                     expense.getDate()
                 });
             }
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             showError(ex.getMessage());
         }
     }
@@ -276,7 +276,7 @@ public class ExpenseSwingView extends JFrame {
             for (Category category : categories) {
                 categoryCombo.addItem(category);
             }
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             showError(ex.getMessage());
         }
     }
@@ -291,7 +291,7 @@ public class ExpenseSwingView extends JFrame {
                 for (Category category : expense.getCategories()) {
                     categoryListModel.addElement(category);
                 }
-            } catch (Exception ex) {
+            } catch (RuntimeException ex) {
                 showError(ex.getMessage());
             }
         }
