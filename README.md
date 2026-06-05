@@ -6,7 +6,7 @@ A Java desktop application for tracking and managing personal expenses, built wi
 
 [![CI Build](https://github.com/Janneh24/Personal-Expense-Application/actions/workflows/ci.yml/badge.svg)](https://github.com/Janneh24/Personal-Expense-Application/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/Janneh24/Personal-Expense-Application/badge.svg?branch=main)](https://coveralls.io/github/Janneh24/Personal-Expense-Application?branch=main)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=YOUR_SONAR_PROJECT_KEY&metric=alert_status)](https://sonarcloud.io/dashboard?id=YOUR_SONAR_PROJECT_KEY)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=alert_status)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
 
 ## Prerequisites
 

@@ -150,6 +150,12 @@
                 </executions>
                 <configuration>
                     <failsafe>true</failsafe>
+                    <excludes>
+                        <exclude>com/personalexpense/view/**</exclude>
+                        <exclude>com/personalexpense/repository/**</exclude>
+                        <exclude>com/personalexpense/app/**</exclude>
+                        <exclude>com/personalexpense/module/**</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <!-- Coveralls -->
