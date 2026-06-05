@@ -63,7 +63,7 @@ public class ExpenseService {
 
     public Category updateCategory(Category category) {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
+            throw new IllegalArgumentException(CATEGORY_NAME_ERROR);
         }
         return categoryRepository.update(category);
     }

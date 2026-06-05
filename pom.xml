@@ -18,6 +18,15 @@
         <testcontainers.version>1.19.3</testcontainers.version>
         <mysql.connector.version>8.0.33</mysql.connector.version>
         <db.port>3306</db.port>
+        <sonar.coverage.exclusions>
+            **/view/**,**/repository/**,**/app/**,**/module/**
+        </sonar.coverage.exclusions>
+        <sonar.exclusions>
+            **/view/**,**/repository/**,**/app/**,**/module/**
+        </sonar.exclusions>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.build.directory}/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
