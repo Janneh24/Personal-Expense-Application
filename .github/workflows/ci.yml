@@ -66,4 +66,3 @@ jobs:
           -Dsonar.organization=janneh24
           -Dsonar.projectKey=Janneh24_Personal-Expense-Application
           -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.token=${{ secrets.SONARCLOUDTOKEN }}
