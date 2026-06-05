@@ -252,7 +252,7 @@ public class ExpenseSwingView extends JFrame {
         }
     }
 
-    private void refreshExpenseTable() {
+    public void refreshExpenseTable() {
         tableModel.setRowCount(0);
         try {
             List<Expense> expenses = expenseService.getAllExpenses();

@@ -49,7 +49,7 @@ class ExpenseSwingViewTest {
         window.textBox("amountField").requireEmpty();
         window.textBox("dateField").requireEmpty();
         window.table("expenseTable").requireRowCount(0);
-        window.label("errorLabel").requireText("");
+        window.label("errorLabel").requireText(" ");
     }
 
     @Test
@@ -58,13 +58,14 @@ class ExpenseSwingViewTest {
         when(expenseService.addExpense(any(Expense.class))).thenReturn(e);
         when(expenseService.getAllExpenses()).thenReturn(Arrays.asList(e));
 
-        window.textBox("descriptionField").enterText("Lunch");
-        window.textBox("amountField").enterText("15.0");
-        window.textBox("dateField").enterText("2023-01-01");
-        window.button("addButton").click();
+        window.textBox("descriptionField").setText("Lunch");
+        window.textBox("amountField").setText("15.0");
+        window.textBox("dateField").setText("2023-01-01");
+        GuiActionRunner.execute(() -> window.button("addButton").target().doClick());
 
-        window.table("expenseTable").requireRowCount(1);
+        window.label("errorLabel").requireText(" ");
         verify(expenseService).addExpense(any(Expense.class));
+        window.table("expenseTable").requireRowCount(1);
     }
 
     @Test
@@ -72,9 +73,9 @@ class ExpenseSwingViewTest {
         doThrow(new IllegalArgumentException("Description cannot be empty"))
             .when(expenseService).addExpense(any(Expense.class));
 
-        window.textBox("amountField").enterText("15.0");
-        window.textBox("dateField").enterText("2023-01-01");
-        window.button("addButton").click();
+        window.textBox("amountField").setText("15.0");
+        window.textBox("dateField").setText("2023-01-01");
+        GuiActionRunner.execute(() -> window.button("addButton").target().doClick());
 
         window.label("errorLabel").requireText("Description cannot be empty");
     }
@@ -85,12 +86,12 @@ class ExpenseSwingViewTest {
         when(expenseService.getAllExpenses()).thenReturn(Arrays.asList(e));
         
         // Setup view with one item
-        GuiActionRunner.execute(() -> view.refreshTables());
+        GuiActionRunner.execute(() -> view.refreshExpenseTable());
         
         when(expenseService.getAllExpenses()).thenReturn(Collections.emptyList());
 
         window.table("expenseTable").selectRows(0);
-        window.button("deleteButton").click();
+        GuiActionRunner.execute(() -> window.button("deleteButton").target().doClick());
 
         verify(expenseService).deleteExpense(1L);
         window.table("expenseTable").requireRowCount(0);

@@ -81,6 +81,13 @@ class ExpenseServiceTest {
     }
 
     @Test
+    void testAddExpenseInvalidAmountZero() {
+        Expense e1 = new Expense(0L, "Desc", 0.0, "2023-01-01");
+        assertThatThrownBy(() -> expenseService.addExpense(e1))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void testAddExpenseInvalidDate() {
         Expense e1 = new Expense(0L, "Desc", 10.0, "");
         assertThatThrownBy(() -> expenseService.addExpense(e1))
@@ -100,6 +107,13 @@ class ExpenseServiceTest {
     @Test
     void testUpdateExpenseInvalidId() {
         Expense e1 = new Expense(0L, "Desc", 10.0, "2023-01-01");
+        assertThatThrownBy(() -> expenseService.updateExpense(e1))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void testUpdateExpenseInvalidData() {
+        Expense e1 = new Expense(1L, "", 10.0, "2023-01-01");
         assertThatThrownBy(() -> expenseService.updateExpense(e1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
