@@ -65,7 +65,7 @@ class LoginViewTest {
 
         window.textBox("usernameField").setText("invalid");
         window.textBox("passwordField").setText("pwd");
-        window.button("loginButton").click();
+        GuiActionRunner.execute(() -> window.button("loginButton").target().doClick());
 
         window.label("errorLabel").requireText("Invalid username or password");
         verify(expenseViewProvider, never()).get();
@@ -80,7 +80,7 @@ class LoginViewTest {
         window.textBox("usernameField").setText("admin");
         window.textBox("passwordField").setText("adminpwd");
         window.radioButton("userRadio").click(); // User radio is selected, but user is ADMIN in db
-        window.button("loginButton").click();
+        GuiActionRunner.execute(() -> window.button("loginButton").target().doClick());
 
         window.label("errorLabel").requireText("Role mismatch. You selected USER but you are registered as ADMIN");
         verify(expenseViewProvider, never()).get();
@@ -96,7 +96,7 @@ class LoginViewTest {
         window.textBox("usernameField").setText("user1");
         window.textBox("passwordField").setText("userpwd");
         window.radioButton("userRadio").click();
-        window.button("loginButton").click();
+        GuiActionRunner.execute(() -> window.button("loginButton").target().doClick());
 
         verify(expenseViewProvider).get();
         verify(expenseSwingView).setCurrentUser(u);
@@ -112,7 +112,7 @@ class LoginViewTest {
         window.textBox("usernameField").setText("admin");
         window.textBox("passwordField").setText("adminpwd");
         window.radioButton("adminRadio").click();
-        window.button("loginButton").click();
+        GuiActionRunner.execute(() -> window.button("loginButton").target().doClick());
 
         verify(adminViewProvider).get();
         verify(adminView).setVisible(true);

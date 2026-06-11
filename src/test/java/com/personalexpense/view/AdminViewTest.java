@@ -75,7 +75,7 @@ class AdminViewTest {
         window.textBox("usernameField").setText("newuser");
         window.textBox("passwordField").setText("newpwd");
         window.comboBox("roleCombo").selectItem("USER");
-        window.button("createButton").click();
+        GuiActionRunner.execute(() -> window.button("createButton").target().doClick());
 
         verify(userService).createUser(any(User.class));
         window.table("userTable").requireRowCount(2);
@@ -93,7 +93,7 @@ class AdminViewTest {
                 .thenThrow(new IllegalArgumentException("Username cannot be null or empty"));
 
         window.textBox("passwordField").setText("pwd");
-        window.button("createButton").click();
+        GuiActionRunner.execute(() -> window.button("createButton").target().doClick());
 
         window.label("errorLabel").requireText("Username cannot be null or empty");
     }
@@ -110,7 +110,7 @@ class AdminViewTest {
         window.textBox("usernameField").setText("updateduser");
         window.textBox("passwordField").setText("newpwd");
         window.comboBox("roleCombo").selectItem("ADMIN");
-        window.button("updateButton").click();
+        GuiActionRunner.execute(() -> window.button("updateButton").target().doClick());
 
         verify(userService).updateUser(any(User.class));
         window.table("userTable").requireContents(new String[][]{{"1", "updateduser", "ADMIN", "true"}});
@@ -128,7 +128,7 @@ class AdminViewTest {
         lenient().when(userService.getAllUsers()).thenReturn(Collections.emptyList());
         window.table("userTable").selectRows(0);
 
-        window.button("deleteButton").click();
+        GuiActionRunner.execute(() -> window.button("deleteButton").target().doClick());
 
         verify(userService).deleteUser(1L);
         window.table("userTable").requireRowCount(0);
@@ -148,7 +148,7 @@ class AdminViewTest {
         lenient().when(userService.getAllUsers()).thenReturn(Arrays.asList(uDisabled));
 
         window.table("userTable").selectRows(0);
-        window.button("disableButton").click();
+        GuiActionRunner.execute(() -> window.button("disableButton").target().doClick());
 
         verify(userService).disableUser(1L);
         window.table("userTable").requireContents(new String[][]{{"1", "user1", "USER", "false"}});
@@ -168,7 +168,7 @@ class AdminViewTest {
         lenient().when(userService.getAllUsers()).thenReturn(Arrays.asList(uEnabled));
 
         window.table("userTable").selectRows(0);
-        window.button("enableButton").click();
+        GuiActionRunner.execute(() -> window.button("enableButton").target().doClick());
 
         verify(userService).enableUser(1L);
         window.table("userTable").requireContents(new String[][]{{"1", "user1", "USER", "true"}});
@@ -192,7 +192,7 @@ class AdminViewTest {
     void testLogout() {
         when(loginViewProvider.get()).thenReturn(loginView);
 
-        window.button("logoutButton").click();
+        GuiActionRunner.execute(() -> window.button("logoutButton").target().doClick());
 
         verify(loginViewProvider).get();
         verify(loginView).setVisible(true);
