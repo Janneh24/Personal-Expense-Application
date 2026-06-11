@@ -4,8 +4,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.personalexpense.repository.CategoryRepository;
 import com.personalexpense.repository.ExpenseRepository;
+import com.personalexpense.repository.UserRepository;
 import com.personalexpense.repository.mysql.MysqlCategoryRepository;
 import com.personalexpense.repository.mysql.MysqlExpenseRepository;
+import com.personalexpense.repository.mysql.MysqlUserRepository;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
@@ -29,6 +31,7 @@ public class ExpenseModule extends AbstractModule {
     protected void configure() {
         bind(ExpenseRepository.class).to(MysqlExpenseRepository.class).in(Singleton.class);
         bind(CategoryRepository.class).to(MysqlCategoryRepository.class).in(Singleton.class);
+        bind(UserRepository.class).to(MysqlUserRepository.class).in(Singleton.class);
     }
 
     @Provides

@@ -20,6 +20,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+import java.time.Duration;
+
 public class ExpenseManagementSteps {
 
     private static MySQLContainer<?> mysql;
@@ -31,7 +33,9 @@ public class ExpenseManagementSteps {
             mysql = new MySQLContainer<>("mysql:8.0")
                     .withDatabaseName("expensesdb")
                     .withUsername("user")
-                    .withPassword("userpwd");
+                    .withPassword("userpwd")
+                    .withTmpFs(java.util.Collections.singletonMap("/var/lib/mysql", "rw"))
+                    .withStartupTimeout(Duration.ofMinutes(5));
             mysql.start();
         }
 
@@ -93,7 +97,8 @@ public class ExpenseManagementSteps {
 
     @Then("the expense list should contain an expense with description {string}")
     public void the_expense_list_should_contain_an_expense_with_description(String description) {
-        window.table("expenseTable").requireContents(new String[][] {{".*", description, ".*", ".*"}});
+        String value = window.table("expenseTable").valueAt(org.assertj.swing.data.TableCell.row(0).column(1));
+        org.assertj.core.api.Assertions.assertThat(value).isEqualTo(description);
     }
 
     @Then("I should see an error message {string}")
@@ -113,6 +118,7 @@ public class ExpenseManagementSteps {
 
     @Then("the category list should contain {string}")
     public void the_category_list_should_contain(String name) {
-        window.comboBox("categoryCombo").requireItemCount(1);
+        String[] contents = window.comboBox("categoryCombo").contents();
+        org.assertj.core.api.Assertions.assertThat(contents).contains(name);
     }
 }

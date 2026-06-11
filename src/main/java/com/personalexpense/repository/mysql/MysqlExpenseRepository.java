@@ -63,12 +63,17 @@ public class MysqlExpenseRepository implements ExpenseRepository {
 
     @Override
     public Expense save(Expense expense) {
-        String sql = "INSERT INTO expenses (description, amount, date) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO expenses (description, amount, date, user_id) VALUES (?, ?, ?, ?)";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, expense.getDescription());
             stmt.setDouble(2, expense.getAmount());
             stmt.setString(3, expense.getDate());
+            if (expense.getUserId() > 0) {
+                stmt.setLong(4, expense.getUserId());
+            } else {
+                stmt.setNull(4, java.sql.Types.BIGINT);
+            }
             stmt.executeUpdate();
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
@@ -83,13 +88,18 @@ public class MysqlExpenseRepository implements ExpenseRepository {
 
     @Override
     public Expense update(Expense expense) {
-        String sql = "UPDATE expenses SET description = ?, amount = ?, date = ? WHERE id = ?";
+        String sql = "UPDATE expenses SET description = ?, amount = ?, date = ?, user_id = ? WHERE id = ?";
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, expense.getDescription());
             stmt.setDouble(2, expense.getAmount());
             stmt.setString(3, expense.getDate());
-            stmt.setLong(4, expense.getId());
+            if (expense.getUserId() > 0) {
+                stmt.setLong(4, expense.getUserId());
+            } else {
+                stmt.setNull(4, java.sql.Types.BIGINT);
+            }
+            stmt.setLong(5, expense.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RepositoryException("Failed to update expense with id " + expense.getId(), e);
@@ -164,12 +174,34 @@ public class MysqlExpenseRepository implements ExpenseRepository {
         return categories;
     }
 
+    @Override
+    public List<Expense> findByUserId(long userId) {
+        String sql = "SELECT * FROM expenses WHERE user_id = ?";
+        List<Expense> expenses = new ArrayList<>();
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Expense expense = mapRowToExpense(rs);
+                    expense.setCategories(findCategoriesForExpense(expense.getId()));
+                    expenses.add(expense);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Failed to find expenses for user " + userId, e);
+        }
+        return expenses;
+    }
+
     private Expense mapRowToExpense(ResultSet rs) throws SQLException {
-        return new Expense(
+        Expense expense = new Expense(
             rs.getLong("id"),
             rs.getString("description"),
             rs.getDouble("amount"),
             rs.getString("date")
         );
+        expense.setUserId(rs.getLong("user_id"));
+        return expense;
     }
 }

@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -158,6 +159,14 @@ class ExpenseServiceTest {
     }
 
     @Test
+    void testUpdateCategoryInvalidName() {
+        Category c1 = new Category(1L, "");
+        assertThatThrownBy(() -> expenseService.updateCategory(c1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Category name cannot be null or empty");
+    }
+
+    @Test
     void testDeleteCategory() {
         expenseService.deleteCategory(1L);
         verify(categoryRepository).delete(1L);
@@ -173,5 +182,59 @@ class ExpenseServiceTest {
     void testRemoveCategoryFromExpense() {
         expenseService.removeCategoryFromExpense(1L, 2L);
         verify(expenseRepository).removeCategoryFromExpense(1L, 2L);
+    }
+
+    @Test
+    void testGetExpensesByUserId() {
+        Expense e = new Expense(1L, "Desc", 10.0, "2023-01-01", 42L);
+        when(expenseRepository.findByUserId(42L)).thenReturn(Arrays.asList(e));
+
+        List<Expense> result = expenseService.getExpensesByUserId(42L);
+        assertThat(result).containsExactly(e);
+        verify(expenseRepository).findByUserId(42L);
+    }
+
+    @Test
+    void testGenerateReportEmpty() {
+        when(expenseRepository.findByUserId(42L)).thenReturn(Collections.emptyList());
+        String report = expenseService.generateReport(42L);
+        assertThat(report).isEqualTo("No expenses recorded.");
+    }
+
+    @Test
+    void testGenerateReportWithCategorizedAndUncategorized() {
+        Expense e1 = new Expense(1L, "Lunch", 15.5, "2023-01-01", 42L);
+        Category c1 = new Category(1L, "Food");
+        e1.addCategory(c1);
+
+        Expense e2 = new Expense(2L, "Ticket", 10.0, "2023-01-02", 42L);
+        // e2 has no categories (uncategorized)
+
+        Expense e3 = new Expense(3L, "Snack", 5.0, "2023-01-03", 42L);
+        e3.addCategory(c1);
+
+        when(expenseRepository.findByUserId(42L)).thenReturn(Arrays.asList(e1, e2, e3));
+
+        String report = expenseService.generateReport(42L);
+        assertThat(report).contains("Expense Report");
+        assertThat(report).contains("Total Expenses: 30.50");
+        assertThat(report).contains("- Food: 20.50");
+        assertThat(report).contains("- Uncategorized: 10.00");
+    }
+
+    @Test
+    void testGenerateReportAllCategorized() {
+        // All expenses have categories — uncategorizedTotal is exactly 0.0
+        // The "Uncategorized" section must NOT appear in the report.
+        // This kills the ConditionalsBoundaryMutator that changes > 0.0 to >= 0.0.
+        Expense e1 = new Expense(1L, "Lunch", 15.5, "2023-01-01", 42L);
+        Category c1 = new Category(1L, "Food");
+        e1.addCategory(c1);
+
+        when(expenseRepository.findByUserId(42L)).thenReturn(Arrays.asList(e1));
+
+        String report = expenseService.generateReport(42L);
+        assertThat(report).contains("- Food: 15.50");
+        assertThat(report).doesNotContain("Uncategorized");
     }
 }

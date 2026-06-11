@@ -10,6 +10,7 @@ public class Expense {
     private String description;
     private double amount;
     private String date;
+    private long userId;
     private List<Category> categories;
 
     public Expense() {
@@ -17,10 +18,15 @@ public class Expense {
     }
 
     public Expense(long id, String description, double amount, String date) {
+        this(id, description, amount, date, 0L);
+    }
+
+    public Expense(long id, String description, double amount, String date, long userId) {
         this.id = id;
         this.description = description;
         this.amount = amount;
         this.date = date;
+        this.userId = userId;
         this.categories = new ArrayList<>();
     }
 
@@ -32,6 +38,8 @@ public class Expense {
     public void setAmount(double amount) { this.amount = amount; }
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
+    public long getUserId() { return userId; }
+    public void setUserId(long userId) { this.userId = userId; }
     public List<Category> getCategories() { return Collections.unmodifiableList(categories); }
     public void setCategories(List<Category> categories) { this.categories = new ArrayList<>(categories); }
     public void addCategory(Category category) { this.categories.add(category); }
@@ -44,17 +52,18 @@ public class Expense {
         Expense expense = (Expense) o;
         return id == expense.id
             && Double.compare(expense.amount, amount) == 0
+            && userId == expense.userId
             && Objects.equals(description, expense.description)
             && Objects.equals(date, expense.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, amount, date);
+        return Objects.hash(id, description, amount, date, userId);
     }
 
     @Override
     public String toString() {
-        return "Expense{id=" + id + ", description='" + description + "', amount=" + amount + ", date='" + date + "'}";
+        return "Expense{id=" + id + ", description='" + description + "', amount=" + amount + ", date='" + date + "', userId=" + userId + "}";
     }
 }

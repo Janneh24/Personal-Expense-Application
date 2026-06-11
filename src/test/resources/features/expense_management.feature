@@ -16,7 +16,7 @@ Feature: Expense Management
     When I enter "15.5" in the amount field
     And I enter "2023-01-01" in the date field
     And I click the Add Expense button
-    Then I should see an error message "Description cannot be empty"
+    Then I should see an error message "Expense description cannot be null or empty"
 
   Scenario: Add a category successfully
     Given the application is started

@@ -1,6 +1,6 @@
 package com.personalexpense.repository.mysql;
 
-import com.personalexpense.model.Category;
+import com.personalexpense.model.User;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-class MysqlCategoryRepositoryIT {
+class MysqlUserRepositoryIT {
 
     @Container
     public static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
@@ -28,7 +28,7 @@ class MysqlCategoryRepositoryIT {
             .withTmpFs(java.util.Collections.singletonMap("/var/lib/mysql", "rw"))
             .withStartupTimeout(Duration.ofMinutes(5));
 
-    private MysqlCategoryRepository repository;
+    private MysqlUserRepository repository;
     private MysqlDataSource dataSource;
 
     @BeforeEach
@@ -50,51 +50,71 @@ class MysqlCategoryRepositoryIT {
             stmt.execute("DELETE FROM expense_category");
             stmt.execute("DELETE FROM expenses");
             stmt.execute("DELETE FROM categories");
+            stmt.execute("DELETE FROM users");
         }
 
-        repository = new MysqlCategoryRepository(dataSource);
+        repository = new MysqlUserRepository(dataSource);
     }
 
     @Test
     void testSaveAndFindAll() {
-        Category c1 = new Category(0L, "Food");
-        Category saved = repository.save(c1);
+        User u = new User(0L, "user1", "pwd1", "USER", true);
+        User saved = repository.save(u);
         assertThat(saved.getId()).isGreaterThan(0L);
 
-        List<Category> categories = repository.findAll();
-        assertThat(categories).hasSize(1);
-        assertThat(categories.get(0).getName()).isEqualTo("Food");
+        List<User> users = repository.findAll();
+        assertThat(users).hasSize(1);
+        assertThat(users.get(0).getUsername()).isEqualTo("user1");
+        assertThat(users.get(0).getRole()).isEqualTo("USER");
+        assertThat(users.get(0).isEnabled()).isTrue();
     }
 
     @Test
     void testFindById() {
-        Category c1 = new Category(0L, "Food");
-        Category saved = repository.save(c1);
+        User u = new User(0L, "user1", "pwd1", "USER", true);
+        User saved = repository.save(u);
 
-        Category found = repository.findById(saved.getId());
+        User found = repository.findById(saved.getId());
         assertThat(found).isNotNull();
-        assertThat(found.getName()).isEqualTo("Food");
+        assertThat(found.getUsername()).isEqualTo("user1");
+    }
+
+    @Test
+    void testFindByUsername() {
+        User u = new User(0L, "user1", "pwd1", "USER", true);
+        repository.save(u);
+
+        User found = repository.findByUsername("user1");
+        assertThat(found).isNotNull();
+        assertThat(found.getPassword()).isEqualTo("pwd1");
+
+        User notFound = repository.findByUsername("nonexistent");
+        assertThat(notFound).isNull();
     }
 
     @Test
     void testUpdate() {
-        Category c1 = new Category(0L, "Food");
-        Category saved = repository.save(c1);
+        User u = new User(0L, "user1", "pwd1", "USER", true);
+        User saved = repository.save(u);
 
-        saved.setName("Travel");
+        saved.setUsername("updateduser");
+        saved.setRole("ADMIN");
+        saved.setEnabled(false);
         repository.update(saved);
 
-        Category found = repository.findById(saved.getId());
-        assertThat(found.getName()).isEqualTo("Travel");
+        User found = repository.findById(saved.getId());
+        assertThat(found.getUsername()).isEqualTo("updateduser");
+        assertThat(found.getRole()).isEqualTo("ADMIN");
+        assertThat(found.isEnabled()).isFalse();
     }
 
     @Test
     void testDelete() {
-        Category c1 = new Category(0L, "Food");
-        Category saved = repository.save(c1);
+        User u = new User(0L, "user1", "pwd1", "USER", true);
+        User saved = repository.save(u);
 
         repository.delete(saved.getId());
-        List<Category> categories = repository.findAll();
-        assertThat(categories).isEmpty();
+        List<User> users = repository.findAll();
+        assertThat(users).isEmpty();
     }
 }

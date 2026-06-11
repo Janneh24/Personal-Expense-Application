@@ -83,12 +83,13 @@ class ExpenseSwingViewTest {
     @Test
     void testDeleteExpense() {
         Expense e = new Expense(1L, "Lunch", 15.0, "2023-01-01");
-        when(expenseService.getAllExpenses()).thenReturn(Arrays.asList(e));
+        lenient().when(expenseService.getAllExpenses()).thenReturn(Arrays.asList(e));
+        lenient().when(expenseService.getExpenseById(1L)).thenReturn(e);
         
         // Setup view with one item
         GuiActionRunner.execute(() -> view.refreshExpenseTable());
         
-        when(expenseService.getAllExpenses()).thenReturn(Collections.emptyList());
+        lenient().when(expenseService.getAllExpenses()).thenReturn(Collections.emptyList());
 
         window.table("expenseTable").selectRows(0);
         GuiActionRunner.execute(() -> window.button("deleteButton").target().doClick());

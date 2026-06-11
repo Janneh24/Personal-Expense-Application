@@ -13,4 +13,5 @@ public interface ExpenseRepository {
     void addCategoryToExpense(long expenseId, long categoryId);
     void removeCategoryFromExpense(long expenseId, long categoryId);
     List<Category> findCategoriesForExpense(long expenseId);
+    List<Expense> findByUserId(long userId);
 }

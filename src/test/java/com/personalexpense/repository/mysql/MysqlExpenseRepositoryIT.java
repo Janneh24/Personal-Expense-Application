@@ -2,6 +2,7 @@ package com.personalexpense.repository.mysql;
 
 import com.personalexpense.model.Category;
 import com.personalexpense.model.Expense;
+import com.personalexpense.model.User;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +26,9 @@ class MysqlExpenseRepositoryIT {
     public static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
             .withDatabaseName("expensesdb")
             .withUsername("user")
-            .withPassword("userpwd");
+            .withPassword("userpwd")
+            .withTmpFs(java.util.Collections.singletonMap("/var/lib/mysql", "rw"))
+            .withStartupTimeout(Duration.ofMinutes(5));
 
     private MysqlExpenseRepository repository;
     private MysqlDataSource dataSource;
@@ -116,5 +120,24 @@ class MysqlExpenseRepositoryIT {
         repository.removeCategoryFromExpense(savedExpense.getId(), savedCat.getId());
         categories = repository.findCategoriesForExpense(savedExpense.getId());
         assertThat(categories).isEmpty();
+    }
+
+    @Test
+    void testFindByUserId() {
+        MysqlUserRepository userRepo = new MysqlUserRepository(dataSource);
+        User user = new User(0L, "testuser", "pwd", "USER", true);
+        User savedUser = userRepo.save(user);
+
+        Expense e1 = new Expense(0L, "Lunch", 15.5, "2023-01-01", savedUser.getId());
+        Expense e2 = new Expense(0L, "Dinner", 25.0, "2023-01-02", savedUser.getId());
+        Expense e3 = new Expense(0L, "Books", 50.0, "2023-01-03", 0L);
+
+        repository.save(e1);
+        repository.save(e2);
+        repository.save(e3);
+
+        List<Expense> userExpenses = repository.findByUserId(savedUser.getId());
+        assertThat(userExpenses).hasSize(2);
+        assertThat(userExpenses).extracting(Expense::getDescription).containsExactlyInAnyOrder("Lunch", "Dinner");
     }
 }
