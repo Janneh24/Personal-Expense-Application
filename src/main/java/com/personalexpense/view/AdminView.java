@@ -19,9 +19,14 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class AdminView extends JFrame {
 
@@ -31,19 +36,19 @@ public class AdminView extends JFrame {
     private final transient ExpenseService expenseService;
     private final transient Provider<LoginView> loginViewProvider;
 
-    private transient JTable userTable;
-    private transient DefaultTableModel tableModel;
-    private transient JTextField usernameField;
-    private transient JTextField passwordField;
-    private transient JComboBox<String> roleCombo;
-    private transient JButton createButton;
-    private transient JButton updateButton;
-    private transient JButton deleteButton;
-    private transient JButton disableButton;
-    private transient JButton enableButton;
-    private transient JButton reportButton;
-    private transient JButton logoutButton;
-    private transient JLabel errorLabel;
+    private JTable userTable;
+    private DefaultTableModel tableModel;
+    private JTextField usernameField;
+    private JTextField passwordField;
+    private JComboBox<String> roleCombo;
+    private JButton createButton;
+    private JButton updateButton;
+    private JButton deleteButton;
+    private JButton disableButton;
+    private JButton enableButton;
+    private JButton reportButton;
+    private JButton logoutButton;
+    private JLabel errorLabel;
 
     @Inject
     public AdminView(UserService userService, 
@@ -110,7 +115,7 @@ public class AdminView extends JFrame {
 
         errorLabel = new JLabel(" ");
         errorLabel.setName("errorLabel");
-        errorLabel.setForeground(java.awt.Color.RED);
+        errorLabel.setForeground(Color.RED);
     }
 
     private void layoutComponents() {
@@ -293,19 +298,19 @@ public class AdminView extends JFrame {
     private void saveReportToPdf(List<Expense> expenses, String username) {
         javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
         fileChooser.setDialogTitle("Save Expense Report as PDF");
-        fileChooser.setSelectedFile(new java.io.File("expense_report_" + username + ".pdf"));
+        fileChooser.setSelectedFile(new File("expense_report_" + username + ".pdf"));
         
         int userSelection = fileChooser.showSaveDialog(this);
         if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File fileToSave = fileChooser.getSelectedFile();
+            File fileToSave = fileChooser.getSelectedFile();
             String path = fileToSave.getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".pdf")) {
-                fileToSave = new java.io.File(path + ".pdf");
+            if (!path.toLowerCase(Locale.ROOT).endsWith(".pdf")) {
+                fileToSave = new File(path + ".pdf");
             }
-            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(fileToSave)) {
+            try (FileOutputStream fos = new FileOutputStream(fileToSave)) {
                 com.personalexpense.util.PdfReportExporter.exportToPdf(expenses, username, fos);
                 JOptionPane.showMessageDialog(this, "Report saved successfully as PDF!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception e) {
+            } catch (IOException | RuntimeException e) {
                 showError("Failed to save report: " + e.getMessage());
             }
         }
@@ -358,7 +363,7 @@ public class AdminView extends JFrame {
             
             String role = (String) tableModel.getValueAt(selectedRow, 2);
             if (role != null) {
-                roleCombo.setSelectedItem(role.toUpperCase());
+                roleCombo.setSelectedItem(role.toUpperCase(Locale.ROOT));
             }
         }
     }

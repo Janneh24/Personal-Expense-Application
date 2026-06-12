@@ -28,12 +28,12 @@ public class LoginView extends JFrame {
     private final transient Provider<ExpenseSwingView> expenseViewProvider;
     private final transient Provider<AdminView> adminViewProvider;
 
-    private transient JTextField usernameField;
-    private transient JPasswordField passwordField;
-    private transient JRadioButton userRadio;
-    private transient JRadioButton adminRadio;
-    private transient JButton loginButton;
-    private transient JLabel errorLabel;
+    private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JRadioButton userRadio;
+    private JRadioButton adminRadio;
+    private JButton loginButton;
+    private JLabel errorLabel;
 
     @Inject
     public LoginView(UserService userService, 
@@ -153,7 +153,7 @@ public class LoginView extends JFrame {
             clearError();
         } catch (IllegalArgumentException ex) {
             showError(ex.getMessage());
-        } catch (Exception ex) {
+        } catch (RuntimeException ex) {
             showError("System/DB error: " + (ex.getMessage() != null ? ex.getMessage() : ex.toString()));
         }
     }

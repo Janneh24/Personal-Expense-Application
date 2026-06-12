@@ -4,9 +4,25 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.personalexpense.module.ExpenseModule;
 import com.personalexpense.view.LoginView;
+
+import javax.sql.DataSource;
 import javax.swing.SwingUtilities;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ExpenseApp {
+
+    private static final Logger LOGGER = Logger.getLogger(ExpenseApp.class.getName());
+
     private ExpenseApp() {
         // Utility class
     }
@@ -23,12 +39,11 @@ public class ExpenseApp {
         );
 
         // Auto-initialize database schema if it doesn't exist
-        javax.sql.DataSource dataSource = injector.getInstance(javax.sql.DataSource.class);
+        DataSource dataSource = injector.getInstance(DataSource.class);
         try {
             initializeDatabase(dataSource);
-        } catch (Exception e) {
-            System.err.println("Warning: Database auto-initialization failed: " + e.getMessage());
-            e.printStackTrace();
+        } catch (SQLException | IOException e) {
+            LOGGER.log(Level.WARNING, "Database auto-initialization failed", e);
         }
 
         SwingUtilities.invokeLater(() -> {
@@ -37,14 +52,14 @@ public class ExpenseApp {
         });
     }
 
-    private static void initializeDatabase(javax.sql.DataSource dataSource) throws Exception {
-        try (java.sql.Connection conn = dataSource.getConnection()) {
-            System.out.println("Checking and initializing database schema from init.sql...");
-            try (java.io.InputStream is = ExpenseApp.class.getResourceAsStream("/db/init.sql")) {
+    private static void initializeDatabase(DataSource dataSource) throws SQLException, IOException {
+        try (Connection conn = dataSource.getConnection()) {
+            LOGGER.info("Checking and initializing database schema from init.sql...");
+            try (InputStream is = ExpenseApp.class.getResourceAsStream("/db/init.sql")) {
                 if (is == null) {
-                    throw new java.io.FileNotFoundException("init.sql not found in resources");
+                    throw new FileNotFoundException("init.sql not found in resources");
                 }
-                try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                     StringBuilder sb = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
@@ -55,7 +70,7 @@ public class ExpenseApp {
                     }
 
                     String[] statements = sb.toString().split(";");
-                    try (java.sql.Statement stmt = conn.createStatement()) {
+                    try (Statement stmt = conn.createStatement()) {
                         for (String sql : statements) {
                             if (!sql.trim().isEmpty()) {
                                 stmt.execute(sql.trim());
@@ -64,7 +79,7 @@ public class ExpenseApp {
                     }
                 }
             }
-            System.out.println("Database initialization completed successfully.");
+            LOGGER.info("Database initialization completed successfully.");
         }
     }
 }

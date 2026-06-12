@@ -19,11 +19,8 @@
         <mysql.connector.version>8.0.33</mysql.connector.version>
         <db.port>3306</db.port>
         <sonar.coverage.exclusions>
-            **/view/**,**/repository/**,**/app/**,**/module/**
+            **/app/**,**/module/**,**/view/**,**/util/**,**/repository/**
         </sonar.coverage.exclusions>
-        <sonar.exclusions>
-            **/view/**,**/repository/**,**/app/**,**/module/**
-        </sonar.exclusions>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.build.directory}/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
@@ -180,12 +177,12 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <failsafe>true</failsafe>
                     <excludes>
-                        <exclude>com/personalexpense/view/**</exclude>
-                        <exclude>com/personalexpense/repository/**</exclude>
                         <exclude>com/personalexpense/app/**</exclude>
                         <exclude>com/personalexpense/module/**</exclude>
+                        <exclude>com/personalexpense/view/**</exclude>
+                        <exclude>com/personalexpense/util/**</exclude>
+                        <exclude>com/personalexpense/repository/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

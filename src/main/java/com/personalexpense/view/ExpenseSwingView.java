@@ -21,9 +21,14 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class ExpenseSwingView extends JFrame {
 
@@ -33,23 +38,23 @@ public class ExpenseSwingView extends JFrame {
     private final transient Provider<LoginView> loginViewProvider;
     private transient User currentUser;
 
-    private transient JTable expenseTable;
-    private transient DefaultTableModel tableModel;
-    private transient JTextField descriptionField;
-    private transient JTextField amountField;
-    private transient JTextField dateField;
-    private transient JButton addButton;
-    private transient JButton updateButton;
-    private transient JButton deleteButton;
-    private transient JButton reportButton;
-    private transient JButton logoutButton;
-    private transient JComboBox<Category> categoryCombo;
-    private transient JButton addCategoryButton;
-    private transient JButton assignCategoryButton;
-    private transient JTextField categoryNameField;
-    private transient JList<Category> categoryList;
-    private transient DefaultListModel<Category> categoryListModel;
-    private transient JLabel errorLabel;
+    private JTable expenseTable;
+    private DefaultTableModel tableModel;
+    private JTextField descriptionField;
+    private JTextField amountField;
+    private JTextField dateField;
+    private JButton addButton;
+    private JButton updateButton;
+    private JButton deleteButton;
+    private JButton reportButton;
+    private JButton logoutButton;
+    private JComboBox<Category> categoryCombo;
+    private JButton addCategoryButton;
+    private JButton assignCategoryButton;
+    private JTextField categoryNameField;
+    private JList<Category> categoryList;
+    private DefaultListModel<Category> categoryListModel;
+    private JLabel errorLabel;
 
     @Inject
     public ExpenseSwingView(ExpenseService expenseService, Provider<LoginView> loginViewProvider) {
@@ -127,10 +132,10 @@ public class ExpenseSwingView extends JFrame {
         categoryCombo.setRenderer(new javax.swing.ListCellRenderer<Category>() {
             private final javax.swing.DefaultListCellRenderer defaultRenderer = new javax.swing.DefaultListCellRenderer();
             @Override
-            public java.awt.Component getListCellRendererComponent(javax.swing.JList<? extends Category> list, Category value, int index, boolean isSelected, boolean cellHasFocus) {
-                java.awt.Component c = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (c instanceof javax.swing.JLabel && value != null) {
-                    ((javax.swing.JLabel) c).setText(value.getName());
+            public Component getListCellRendererComponent(JList<? extends Category> list, Category value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component c = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (c instanceof JLabel && value != null) {
+                    ((JLabel) c).setText(value.getName());
                 }
                 return c;
             }
@@ -151,10 +156,10 @@ public class ExpenseSwingView extends JFrame {
         categoryList.setCellRenderer(new javax.swing.ListCellRenderer<Category>() {
             private final javax.swing.DefaultListCellRenderer defaultRenderer = new javax.swing.DefaultListCellRenderer();
             @Override
-            public java.awt.Component getListCellRendererComponent(javax.swing.JList<? extends Category> list, Category value, int index, boolean isSelected, boolean cellHasFocus) {
-                java.awt.Component c = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (c instanceof javax.swing.JLabel && value != null) {
-                    ((javax.swing.JLabel) c).setText(value.getName());
+            public Component getListCellRendererComponent(JList<? extends Category> list, Category value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component c = defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (c instanceof JLabel && value != null) {
+                    ((JLabel) c).setText(value.getName());
                 }
                 return c;
             }
@@ -334,19 +339,19 @@ public class ExpenseSwingView extends JFrame {
     private void saveReportToPdf(List<Expense> expenses, String username) {
         javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
         fileChooser.setDialogTitle("Save Expense Report as PDF");
-        fileChooser.setSelectedFile(new java.io.File("expense_report_" + username + ".pdf"));
+        fileChooser.setSelectedFile(new File("expense_report_" + username + ".pdf"));
         
         int userSelection = fileChooser.showSaveDialog(this);
         if (userSelection == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File fileToSave = fileChooser.getSelectedFile();
+            File fileToSave = fileChooser.getSelectedFile();
             String path = fileToSave.getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".pdf")) {
-                fileToSave = new java.io.File(path + ".pdf");
+            if (!path.toLowerCase(Locale.ROOT).endsWith(".pdf")) {
+                fileToSave = new File(path + ".pdf");
             }
-            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(fileToSave)) {
+            try (FileOutputStream fos = new FileOutputStream(fileToSave)) {
                 com.personalexpense.util.PdfReportExporter.exportToPdf(expenses, username, fos);
                 JOptionPane.showMessageDialog(this, "Report saved successfully as PDF!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } catch (Exception e) {
+            } catch (IOException | RuntimeException e) {
                 showError("Failed to save report: " + e.getMessage());
             }
         }
@@ -480,7 +485,7 @@ public class ExpenseSwingView extends JFrame {
                     categoryCombo.setSelectedIndex(0);
                 }
             } catch (RuntimeException ex) {
-                // ignore
+                /* Intentionally empty - selection preview is non-critical */
             }
         }
     }

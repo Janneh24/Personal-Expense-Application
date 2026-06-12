@@ -5,6 +5,7 @@ import com.personalexpense.repository.UserRepository;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Locale;
 
 public class UserService {
 
@@ -94,7 +95,7 @@ public class UserService {
         if (user.getRole() == null || user.getRole().trim().isEmpty()) {
             throw new IllegalArgumentException("Role cannot be null or empty");
         }
-        String role = user.getRole().toUpperCase();
+        String role = user.getRole().toUpperCase(Locale.ROOT);
         if (!role.equals("ADMIN") && !role.equals("USER")) {
             throw new IllegalArgumentException("Role must be ADMIN or USER");
         }

@@ -8,6 +8,12 @@ A Java desktop application for tracking and managing personal expenses, built wi
 [![Coverage Status](https://coveralls.io/repos/github/Janneh24/Personal-Expense-Application/badge.svg?branch=main)](https://coveralls.io/github/Janneh24/Personal-Expense-Application?branch=main)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=alert_status)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
 [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=coverage)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=bugs)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=code_smells)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=sqale_index)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Janneh24_Personal-Expense-Application&metric=security_rating)](https://sonarcloud.io/dashboard?id=Janneh24_Personal-Expense-Application)
 
 ## Prerequisites
 
@@ -69,9 +75,13 @@ Personal-Expense-Application/
 | Maven            | Build and dependency management|
 | MySQL 8.0        | Relational database            |
 | Docker Compose   | Local database provisioning    |
-| JUnit            | Unit testing                   |
+| JUnit 5          | Unit testing                   |
+| Mockito          | Mocking framework              |
+| AssertJ Swing    | GUI testing                    |
+| Cucumber         | BDD / End-to-end testing       |
+| Testcontainers   | Integration testing with MySQL |
 | JaCoCo           | Code coverage                  |
+| PIT              | Mutation testing               |
 | Coveralls        | Coverage reporting             |
 | SonarCloud       | Static code analysis           |
 | GitHub Actions   | Continuous integration         |
-| Eclipse / M2E    | IDE support                    |

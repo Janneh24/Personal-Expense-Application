@@ -17,6 +17,7 @@ import java.awt.Color;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Locale;
 import java.util.TreeMap;
 
 public class PdfReportExporter {
@@ -67,7 +68,7 @@ public class PdfReportExporter {
         // Total card paragraph
         Paragraph totalParagraph = new Paragraph();
         totalParagraph.add(new Phrase("Total Accumulated Expenses: ", bodyFont));
-        totalParagraph.add(new Phrase(String.format("$%.2f", grandTotal), totalFont));
+        totalParagraph.add(new Phrase(String.format(Locale.US, "$%.2f", grandTotal), totalFont));
         totalParagraph.setSpacingAfter(20);
         document.add(totalParagraph);
 
@@ -100,7 +101,7 @@ public class PdfReportExporter {
             cellName.setPadding(6);
             cellName.setHorizontalAlignment(Element.ALIGN_LEFT);
 
-            PdfPCell cellVal = new PdfPCell(new Phrase(String.format("$%.2f", entry.getValue()), bodyFont));
+            PdfPCell cellVal = new PdfPCell(new Phrase(String.format(Locale.US, "$%.2f", entry.getValue()), bodyFont));
             cellVal.setPadding(6);
             cellVal.setHorizontalAlignment(Element.ALIGN_RIGHT);
 
@@ -114,7 +115,7 @@ public class PdfReportExporter {
             cellName.setBackgroundColor(new Color(255, 248, 248));
             cellName.setHorizontalAlignment(Element.ALIGN_LEFT);
 
-            PdfPCell cellVal = new PdfPCell(new Phrase(String.format("$%.2f", uncategorizedTotal), bodyFont));
+            PdfPCell cellVal = new PdfPCell(new Phrase(String.format(Locale.US, "$%.2f", uncategorizedTotal), bodyFont));
             cellVal.setPadding(6);
             cellVal.setBackgroundColor(new Color(255, 248, 248));
             cellVal.setHorizontalAlignment(Element.ALIGN_RIGHT);
