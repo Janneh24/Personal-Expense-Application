@@ -92,7 +92,7 @@ public class ExpenseManagementSteps {
 
     @When("I click the Add Expense button")
     public void i_click_the_add_expense_button() {
-        window.button("addButton").click();
+        GuiActionRunner.execute(() -> window.button("addButton").target().doClick());
     }
 
     @Then("the expense list should contain an expense with description {string}")
@@ -113,7 +113,7 @@ public class ExpenseManagementSteps {
 
     @When("I click the Add Category button")
     public void i_click_the_add_category_button() {
-        window.button("addCategoryButton").click();
+        GuiActionRunner.execute(() -> window.button("addCategoryButton").target().doClick());
     }
 
     @Then("the category list should contain {string}")
