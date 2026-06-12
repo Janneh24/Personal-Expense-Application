@@ -220,6 +220,8 @@ class ExpenseServiceTest {
         assertThat(report).contains("Total Expenses: 30.50");
         assertThat(report).contains("- Food: 20.50");
         assertThat(report).contains("- Uncategorized: 10.00");
+        assertThat(report).contains("<html>");
+        assertThat(report).contains("Segoe UI");
     }
 
     @Test
@@ -236,5 +238,7 @@ class ExpenseServiceTest {
         String report = expenseService.generateReport(42L);
         assertThat(report).contains("- Food: 15.50");
         assertThat(report).doesNotContain("Uncategorized");
+        assertThat(report).contains("<html>");
+        assertThat(report).contains("Segoe UI");
     }
 }
