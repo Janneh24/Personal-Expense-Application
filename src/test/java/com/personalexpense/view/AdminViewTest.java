@@ -106,7 +106,7 @@ class AdminViewTest {
         when(userService.updateUser(any(User.class))).thenReturn(uUpdated);
         lenient().when(userService.getAllUsers()).thenReturn(Arrays.asList(u1)).thenReturn(Arrays.asList(uUpdated));
 
-        window.table("userTable").selectRows(0);
+        GuiActionRunner.execute(() -> window.table("userTable").target().setRowSelectionInterval(0, 0));
         window.textBox("usernameField").setText("updateduser");
         window.textBox("passwordField").setText("newpwd");
         window.comboBox("roleCombo").selectItem("ADMIN");
@@ -126,7 +126,7 @@ class AdminViewTest {
     @Test
     void testDeleteUserSuccess() {
         lenient().when(userService.getAllUsers()).thenReturn(Collections.emptyList());
-        window.table("userTable").selectRows(0);
+        GuiActionRunner.execute(() -> window.table("userTable").target().setRowSelectionInterval(0, 0));
 
         GuiActionRunner.execute(() -> window.button("deleteButton").target().doClick());
 
@@ -147,7 +147,7 @@ class AdminViewTest {
         // After disableUser runs, refresh will fetch all users again
         lenient().when(userService.getAllUsers()).thenReturn(Arrays.asList(uDisabled));
 
-        window.table("userTable").selectRows(0);
+        GuiActionRunner.execute(() -> window.table("userTable").target().setRowSelectionInterval(0, 0));
         GuiActionRunner.execute(() -> window.button("disableButton").target().doClick());
 
         verify(userService).disableUser(1L);
@@ -167,7 +167,7 @@ class AdminViewTest {
         // After enableUser runs, refresh will fetch all users again
         lenient().when(userService.getAllUsers()).thenReturn(Arrays.asList(uEnabled));
 
-        window.table("userTable").selectRows(0);
+        GuiActionRunner.execute(() -> window.table("userTable").target().setRowSelectionInterval(0, 0));
         GuiActionRunner.execute(() -> window.button("enableButton").target().doClick());
 
         verify(userService).enableUser(1L);

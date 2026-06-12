@@ -91,7 +91,7 @@ class ExpenseSwingViewTest {
         
         lenient().when(expenseService.getAllExpenses()).thenReturn(Collections.emptyList());
 
-        window.table("expenseTable").selectRows(0);
+        GuiActionRunner.execute(() -> window.table("expenseTable").target().setRowSelectionInterval(0, 0));
         GuiActionRunner.execute(() -> window.button("deleteButton").target().doClick());
 
         verify(expenseService).deleteExpense(1L);
