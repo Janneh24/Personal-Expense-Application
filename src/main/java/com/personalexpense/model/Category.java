@@ -2,6 +2,7 @@ package com.personalexpense.model;
 
 import java.util.Objects;
 
+@SuppressWarnings("all")
 public class Category {
     private long id;
     private String name;

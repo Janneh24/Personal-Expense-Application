@@ -2,6 +2,7 @@ package com.personalexpense.model;
 
 import java.util.Objects;
 
+@SuppressWarnings("all")
 public class User {
     private long id;
     private String username;

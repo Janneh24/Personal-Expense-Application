@@ -17,7 +17,6 @@
         <cucumber.version>7.15.0</cucumber.version>
         <testcontainers.version>1.21.4</testcontainers.version>
         <mysql.connector.version>8.0.33</mysql.connector.version>
-        <db.port>3306</db.port>
         <sonar.coverage.exclusions>
             **/app/**,**/module/**,**/view/**,**/util/**,**/repository/**
         </sonar.coverage.exclusions>
