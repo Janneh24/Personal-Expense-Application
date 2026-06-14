@@ -155,6 +155,17 @@ class UserServiceTest {
     }
 
     @Test
+    void testUpdateUserNewUsernameSuccess() {
+        User u = new User(1L, "new_username", "pwd", "USER", true);
+        // Return null to hit the 'existing == null' branch in updateUser
+        when(userRepository.findByUsername("new_username")).thenReturn(null);
+        when(userRepository.update(u)).thenReturn(u);
+
+        User result = userService.updateUser(u);
+        assertThat(result).isEqualTo(u);
+    }
+
+    @Test
     void testUpdateUserInvalidId() {
         User u = new User(0L, "user1", "pwd", "USER", true);
         assertThatThrownBy(() -> userService.updateUser(u))
