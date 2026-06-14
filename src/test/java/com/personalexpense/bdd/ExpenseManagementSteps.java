@@ -58,7 +58,19 @@ public class ExpenseManagementSteps {
                 new ExpenseModule(mysql.getHost(), mysql.getFirstMappedPort(), mysql.getDatabaseName(), mysql.getUsername(), mysql.getPassword())
         );
 
-        ExpenseSwingView view = GuiActionRunner.execute(() -> injector.getInstance(ExpenseSwingView.class));
+        ExpenseSwingView view = GuiActionRunner.execute(() -> {
+            com.personalexpense.service.UserService userService = injector.getInstance(com.personalexpense.service.UserService.class);
+            com.personalexpense.model.User user = new com.personalexpense.model.User(0L, "bdd_user", "pwd", "USER", true);
+            try {
+                user = userService.createUser(user);
+            } catch (Exception e) {
+                // User might already exist, fetch it
+                user = injector.getInstance(com.personalexpense.repository.UserRepository.class).findByUsername("bdd_user");
+            }
+            ExpenseSwingView v = injector.getInstance(ExpenseSwingView.class);
+            v.setCurrentUser(user);
+            return v;
+        });
         window = new FrameFixture(view);
         window.show();
     }
@@ -77,17 +89,17 @@ public class ExpenseManagementSteps {
 
     @When("I enter {string} in the description field")
     public void i_enter_in_the_description_field(String description) {
-        window.textBox("descriptionField").enterText(description);
+        window.textBox("descriptionField").setText(description);
     }
 
     @When("I enter {string} in the amount field")
     public void i_enter_in_the_amount_field(String amount) {
-        window.textBox("amountField").enterText(amount);
+        window.textBox("amountField").setText(amount);
     }
 
     @When("I enter {string} in the date field")
     public void i_enter_in_the_date_field(String date) {
-        window.textBox("dateField").enterText(date);
+        window.textBox("dateField").setText(date);
     }
 
     @When("I click the Add Expense button")
@@ -97,8 +109,13 @@ public class ExpenseManagementSteps {
 
     @Then("the expense list should contain an expense with description {string}")
     public void the_expense_list_should_contain_an_expense_with_description(String description) {
-        String value = window.table("expenseTable").valueAt(org.assertj.swing.data.TableCell.row(0).column(1));
-        org.assertj.core.api.Assertions.assertThat(value).isEqualTo(description);
+        try {
+            String value = window.table("expenseTable").valueAt(org.assertj.swing.data.TableCell.row(0).column(1));
+            org.assertj.core.api.Assertions.assertThat(value).isEqualTo(description);
+        } catch (Exception e) {
+            String errorMsg = window.label("errorLabel").text();
+            throw new RuntimeException("Assertion failed. GUI Error Label says: '" + errorMsg + "'", e);
+        }
     }
 
     @Then("I should see an error message {string}")
@@ -108,7 +125,7 @@ public class ExpenseManagementSteps {
 
     @When("I enter {string} in the category name field")
     public void i_enter_in_the_category_name_field(String name) {
-        window.textBox("categoryNameField").enterText(name);
+        window.textBox("categoryNameField").setText(name);
     }
 
     @When("I click the Add Category button")
