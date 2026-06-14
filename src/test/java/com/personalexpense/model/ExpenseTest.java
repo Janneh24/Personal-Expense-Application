@@ -17,7 +17,18 @@ class ExpenseTest {
         assertThat(expense.getCategories()).isEmpty();
 
         expense.setUserId(99L);
+        expense.setId(2L);
+        expense.setDescription("Updated");
+        expense.setAmount(50.0);
+        expense.setDate("2023-12-31");
+        expense.setCategories(List.of(new Category(1L, "Food")));
+
         assertThat(expense.getUserId()).isEqualTo(99L);
+        assertThat(expense.getId()).isEqualTo(2L);
+        assertThat(expense.getDescription()).isEqualTo("Updated");
+        assertThat(expense.getAmount()).isEqualTo(50.0);
+        assertThat(expense.getDate()).isEqualTo("2023-12-31");
+        assertThat(expense.getCategories()).hasSize(1);
     }
 
     @Test
