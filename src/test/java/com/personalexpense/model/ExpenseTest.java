@@ -49,6 +49,8 @@ class ExpenseTest {
         assertThat(e1).isEqualTo(e2);
         assertThat(e1).isNotEqualTo(e3);
         assertThat(e1).isNotEqualTo(e4);
+        assertThat(e1).isNotEqualTo(null);
+        assertThat(e1).isNotEqualTo(new Object());
         assertThat(e1.hashCode()).isEqualTo(e2.hashCode());
         assertThat(e1.hashCode()).isNotEqualTo(e3.hashCode());
         assertThat(e1.hashCode()).isNotEqualTo(e4.hashCode());
