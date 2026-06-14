@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+@SuppressWarnings("java:S1192")
 public class ExpenseService {
 
     private static final String CATEGORY_NAME_ERROR = "Category name cannot be null or empty";

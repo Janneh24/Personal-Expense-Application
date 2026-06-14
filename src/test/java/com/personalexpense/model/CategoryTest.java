@@ -12,6 +12,12 @@ class CategoryTest {
         
         category.setName("Travel");
         assertThat(category.getName()).isEqualTo("Travel");
+        
+        Category emptyCategory = new Category();
+        emptyCategory.setId(99L);
+        emptyCategory.setName("Empty");
+        assertThat(emptyCategory.getId()).isEqualTo(99L);
+        assertThat(emptyCategory.getName()).isEqualTo("Empty");
     }
 
     @Test
