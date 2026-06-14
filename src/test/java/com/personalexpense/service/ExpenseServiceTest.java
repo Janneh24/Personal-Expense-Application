@@ -72,6 +72,10 @@ class ExpenseServiceTest {
         Expense e1 = new Expense(0L, "", 10.0, "2023-01-01");
         assertThatThrownBy(() -> expenseService.addExpense(e1))
                 .isInstanceOf(IllegalArgumentException.class);
+        
+        Expense e1Null = new Expense(0L, null, 10.0, "2023-01-01");
+        assertThatThrownBy(() -> expenseService.addExpense(e1Null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -92,6 +96,10 @@ class ExpenseServiceTest {
     void testAddExpenseInvalidDate() {
         Expense e1 = new Expense(0L, "Desc", 10.0, "");
         assertThatThrownBy(() -> expenseService.addExpense(e1))
+                .isInstanceOf(IllegalArgumentException.class);
+                
+        Expense e1Null = new Expense(0L, "Desc", 10.0, null);
+        assertThatThrownBy(() -> expenseService.addExpense(e1Null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -148,6 +156,10 @@ class ExpenseServiceTest {
         Category c1 = new Category(0L, "");
         assertThatThrownBy(() -> expenseService.addCategory(c1))
                 .isInstanceOf(IllegalArgumentException.class);
+                
+        Category c1Null = new Category(0L, null);
+        assertThatThrownBy(() -> expenseService.addCategory(c1Null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -162,6 +174,11 @@ class ExpenseServiceTest {
     void testUpdateCategoryInvalidName() {
         Category c1 = new Category(1L, "");
         assertThatThrownBy(() -> expenseService.updateCategory(c1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Category name cannot be null or empty");
+                
+        Category c1Null = new Category(1L, null);
+        assertThatThrownBy(() -> expenseService.updateCategory(c1Null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Category name cannot be null or empty");
     }
