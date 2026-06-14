@@ -223,6 +223,7 @@ class ExpenseServiceTest {
         Expense e1 = new Expense(1L, "Lunch", 15.5, "2023-01-01", 42L);
         Category c1 = new Category(1L, "Food");
         e1.addCategory(c1);
+        e1.addCategory(new Category(2L, "Dining")); // Add second category to hit multiple loop iterations
 
         Expense e2 = new Expense(2L, "Ticket", 10.0, "2023-01-02", 42L);
         // e2 has no categories (uncategorized)
@@ -236,9 +237,16 @@ class ExpenseServiceTest {
         assertThat(report).contains("Expense Report");
         assertThat(report).contains("Total Expenses: 30.50");
         assertThat(report).contains("- Food: 20.50");
+        assertThat(report).contains("- Dining: 15.50");
         assertThat(report).contains("- Uncategorized: 10.00");
         assertThat(report).contains("<html>");
         assertThat(report).contains("Segoe UI");
+        assertThat(report).contains("Expense Summary Report");
+        assertThat(report).contains("Generated dynamically for User ID: 42");
+        assertThat(report).contains("Total Accumulated Expenses");
+        assertThat(report).contains("Spending by Category");
+        assertThat(report).contains("Food");
+        assertThat(report).contains("Uncategorized");
     }
 
     @Test

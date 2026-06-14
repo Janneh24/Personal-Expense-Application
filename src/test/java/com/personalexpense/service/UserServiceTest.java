@@ -96,6 +96,14 @@ class UserServiceTest {
 
         User result = userService.createUser(u);
         assertThat(result).isEqualTo(saved);
+
+        // Test ADMIN role to hit missing validateUser branch
+        User adminUser = new User(0L, "admin_user", "adminpwd", "ADMIN", true);
+        User adminSaved = new User(2L, "admin_user", "adminpwd", "ADMIN", true);
+        when(userRepository.findByUsername("admin_user")).thenReturn(null);
+        when(userRepository.save(adminUser)).thenReturn(adminSaved);
+        User adminResult = userService.createUser(adminUser);
+        assertThat(adminResult).isEqualTo(adminSaved);
     }
 
     @Test
