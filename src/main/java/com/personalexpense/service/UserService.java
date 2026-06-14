@@ -9,6 +9,11 @@ import java.util.Locale;
 
 public class UserService {
 
+    private static final String USERNAME_EMPTY_ERROR = "Username cannot be null or empty";
+    private static final String PASSWORD_EMPTY_ERROR = "Password cannot be null or empty";
+    private static final String USER_NOT_FOUND_ERROR = "User not found: ";
+    private static final String USERNAME_EXISTS_ERROR = "Username already exists: ";
+
     private final UserRepository userRepository;
 
     @Inject
@@ -18,10 +23,10 @@ public class UserService {
 
     public User authenticate(String username, String password) {
         if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
+            throw new IllegalArgumentException(USERNAME_EMPTY_ERROR);
         }
         if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty");
+            throw new IllegalArgumentException(PASSWORD_EMPTY_ERROR);
         }
 
         User user = userRepository.findByUsername(username);
@@ -39,7 +44,7 @@ public class UserService {
         
         User existing = userRepository.findByUsername(user.getUsername());
         if (existing != null) {
-            throw new IllegalArgumentException("Username already exists: " + user.getUsername());
+            throw new IllegalArgumentException(USERNAME_EXISTS_ERROR + user.getUsername());
         }
         
         return userRepository.save(user);
@@ -53,7 +58,7 @@ public class UserService {
 
         User existing = userRepository.findByUsername(user.getUsername());
         if (existing != null && existing.getId() != user.getId()) {
-            throw new IllegalArgumentException("Username already exists: " + user.getUsername());
+            throw new IllegalArgumentException(USERNAME_EXISTS_ERROR + user.getUsername());
         }
 
         return userRepository.update(user);
@@ -66,7 +71,7 @@ public class UserService {
     public void disableUser(long id) {
         User user = userRepository.findById(id);
         if (user == null) {
-            throw new IllegalArgumentException("User not found: " + id);
+            throw new IllegalArgumentException(USER_NOT_FOUND_ERROR + id);
         }
         user.setEnabled(false);
         userRepository.update(user);
@@ -75,7 +80,7 @@ public class UserService {
     public void enableUser(long id) {
         User user = userRepository.findById(id);
         if (user == null) {
-            throw new IllegalArgumentException("User not found: " + id);
+            throw new IllegalArgumentException(USER_NOT_FOUND_ERROR + id);
         }
         user.setEnabled(true);
         userRepository.update(user);
@@ -87,10 +92,10 @@ public class UserService {
 
     private void validateUser(User user) {
         if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
+            throw new IllegalArgumentException(USERNAME_EMPTY_ERROR);
         }
         if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty");
+            throw new IllegalArgumentException(PASSWORD_EMPTY_ERROR);
         }
         if (user.getRole() == null || user.getRole().trim().isEmpty()) {
             throw new IllegalArgumentException("Role cannot be null or empty");
