@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Locale;
 
-@SuppressWarnings("all")
 public class UserService {
 
     private static final String USERNAME_EMPTY_ERROR = "Username cannot be null or empty";

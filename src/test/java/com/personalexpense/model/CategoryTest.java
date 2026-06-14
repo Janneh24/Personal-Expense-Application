@@ -27,6 +27,7 @@ class CategoryTest {
         Category c3 = new Category(2L, "Travel");
         Category c4 = new Category(1L, "Travel"); // id matches, name mismatch
 
+        assertThat(c1).isEqualTo(c1); // Fix missing this==o coverage
         assertThat(c1).isEqualTo(c2);
         assertThat(c1).isNotEqualTo(c3);
         assertThat(c1).isNotEqualTo(c4);

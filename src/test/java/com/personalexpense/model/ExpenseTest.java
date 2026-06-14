@@ -44,11 +44,18 @@ class ExpenseTest {
         Expense e1 = new Expense(1L, "Test", 10.5, "2023-01-01", 42L);
         Expense e2 = new Expense(1L, "Test", 10.5, "2023-01-01", 42L);
         Expense e3 = new Expense(1L, "Test", 10.5, "2023-01-01", 99L);
-        Expense e4 = new Expense(2L, "Test2", 20.0, "2023-01-02", 42L);
+        Expense e4 = new Expense(2L, "Test", 10.5, "2023-01-01", 42L); // id mismatch
+        Expense e5 = new Expense(1L, "Test", 20.0, "2023-01-01", 42L); // amount mismatch
+        Expense e6 = new Expense(1L, "Test2", 10.5, "2023-01-01", 42L); // description mismatch
+        Expense e7 = new Expense(1L, "Test", 10.5, "2023-01-02", 42L); // date mismatch
 
+        assertThat(e1).isEqualTo(e1); // Fix missing this==o coverage
         assertThat(e1).isEqualTo(e2);
         assertThat(e1).isNotEqualTo(e3);
         assertThat(e1).isNotEqualTo(e4);
+        assertThat(e1).isNotEqualTo(e5);
+        assertThat(e1).isNotEqualTo(e6);
+        assertThat(e1).isNotEqualTo(e7);
         assertThat(e1).isNotEqualTo(null);
         assertThat(e1).isNotEqualTo(new Object());
         assertThat(e1.hashCode()).isEqualTo(e2.hashCode());

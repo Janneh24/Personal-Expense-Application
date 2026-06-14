@@ -11,10 +11,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-@SuppressWarnings("java:S1192")
 public class ExpenseService {
 
     private static final String CATEGORY_NAME_ERROR = "Category name cannot be null or empty";
+    private static final String HTML_TR_END = "</tr>";
+    private static final String HTML_TD_END = "</td>";
+    private static final String HTML_DIV_END = "</div>";
+    private static final String FORMAT_2F = "%.2f";
 
     private final ExpenseRepository expenseRepository;
     private final CategoryRepository categoryRepository;
@@ -116,12 +119,12 @@ public class ExpenseService {
         // 1. Hidden metadata for unit tests (keeps 100% test compatibility)
         sb.append("<!--\n");
         sb.append("Expense Report\n");
-        sb.append(String.format(Locale.US, "Total Expenses: %.2f\n", grandTotal));
+        sb.append(String.format(Locale.US, "Total Expenses: " + FORMAT_2F + "\n", grandTotal));
         for (Map.Entry<String, Double> entry : categoryTotals.entrySet()) {
-            sb.append(String.format(Locale.US, "- %s: %.2f\n", entry.getKey(), entry.getValue()));
+            sb.append(String.format(Locale.US, "- %s: " + FORMAT_2F + "\n", entry.getKey(), entry.getValue()));
         }
         if (uncategorizedTotal > 0.0) {
-            sb.append(String.format(Locale.US, "- Uncategorized: %.2f\n", uncategorizedTotal));
+            sb.append(String.format(Locale.US, "- Uncategorized: " + FORMAT_2F + "\n", uncategorizedTotal));
         }
         sb.append("-->\n");
 
@@ -141,8 +144,8 @@ public class ExpenseService {
 
         sb.append("<div style='background-color: #e8f4fd; border-left: 4px solid #007bff; padding: 10px; margin: 15px 0; border-radius: 4px;'>");
         sb.append("<span style='font-size: 13px; color: #495057;'>Total Accumulated Expenses</span><br/>");
-        sb.append("<strong style='font-size: 20px; color: #007bff;'>$").append(String.format(Locale.US, "%.2f", grandTotal)).append("</strong>");
-        sb.append("</div>");
+        sb.append("<strong style='font-size: 20px; color: #007bff;'>$").append(String.format(Locale.US, FORMAT_2F, grandTotal)).append("</strong>");
+        sb.append(HTML_DIV_END);
 
         sb.append("<h4 style='color: #495057; margin-bottom: 8px; margin-top: 15px;'>Spending by Category</h4>");
         sb.append("<table cellpadding='6' cellspacing='0' style='width: 100%; border-collapse: collapse; font-size: 13px;'>");
@@ -150,27 +153,27 @@ public class ExpenseService {
         sb.append("<tr style='background-color: #f1f3f5; text-align: left; font-weight: bold;'>");
         sb.append("<th style='border-bottom: 2px solid #dee2e6; padding: 8px; color: #495057;'>Category</th>");
         sb.append("<th style='border-bottom: 2px solid #dee2e6; padding: 8px; text-align: right; color: #495057;'>Amount</th>");
-        sb.append("</tr>");
+        sb.append(HTML_TR_END);
         sb.append("</thead>");
         sb.append("<tbody>");
 
         for (Map.Entry<String, Double> entry : categoryTotals.entrySet()) {
             sb.append("<tr style='border-bottom: 1px solid #dee2e6;'>");
-            sb.append("<td style='padding: 8px; color: #212529;'>").append(entry.getKey()).append("</td>");
-            sb.append("<td style='padding: 8px; text-align: right; font-weight: bold; color: #212529;'>$").append(String.format(Locale.US, "%.2f", entry.getValue())).append("</td>");
-            sb.append("</tr>");
+            sb.append("<td style='padding: 8px; color: #212529;'>").append(entry.getKey()).append(HTML_TD_END);
+            sb.append("<td style='padding: 8px; text-align: right; font-weight: bold; color: #212529;'>$").append(String.format(Locale.US, FORMAT_2F, entry.getValue())).append(HTML_TD_END);
+            sb.append(HTML_TR_END);
         }
 
         if (uncategorizedTotal > 0.0) {
             sb.append("<tr style='border-bottom: 1px solid #dee2e6; background-color: #fff8f8;'>");
-            sb.append("<td style='padding: 8px; color: #868e96;'>Uncategorized</td>");
-            sb.append("<td style='padding: 8px; text-align: right; font-weight: bold; color: #868e96;'>$").append(String.format(Locale.US, "%.2f", uncategorizedTotal)).append("</td>");
-            sb.append("</tr>");
+            sb.append("<td style='padding: 8px; color: #868e96;'>Uncategorized").append(HTML_TD_END);
+            sb.append("<td style='padding: 8px; text-align: right; font-weight: bold; color: #868e96;'>$").append(String.format(Locale.US, FORMAT_2F, uncategorizedTotal)).append(HTML_TD_END);
+            sb.append(HTML_TR_END);
         }
 
         sb.append("</tbody>");
         sb.append("</table>");
-        sb.append("</div>");
+        sb.append(HTML_DIV_END);
         sb.append("</body>");
         sb.append("</html>");
     }

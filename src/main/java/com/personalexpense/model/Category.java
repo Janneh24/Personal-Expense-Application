@@ -2,12 +2,13 @@ package com.personalexpense.model;
 
 import java.util.Objects;
 
-@SuppressWarnings("all")
 public class Category {
     private long id;
     private String name;
 
-    public Category() {}
+    public Category() {
+        // Default constructor required for framework serialization
+    }
 
     public Category(long id, String name) {
         this.id = id;

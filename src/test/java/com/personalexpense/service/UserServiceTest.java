@@ -33,6 +33,7 @@ class UserServiceTest {
 
         User authenticated = userService.authenticate("admin", "adminpwd");
         assertThat(authenticated).isEqualTo(u);
+        assertThat(u).isEqualTo(u); // Fix missing this==o coverage
     }
 
     @Test
