@@ -40,7 +40,7 @@ mvn clean verify
 ### 3. Run the Application
 
 ```bash
-java -jar target/personal-expense-application-1.0.0-SNAPSHOT.jar
+mvn exec:java "-Dexec.mainClass=com.personalexpense.app.ExpenseApp"
 ```
 
 ## Project Structure
