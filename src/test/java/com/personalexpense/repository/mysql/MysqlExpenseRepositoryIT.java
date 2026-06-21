@@ -23,12 +23,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MysqlExpenseRepositoryIT {
 
     @Container
+    @SuppressWarnings("resource")
     public static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
             .withDatabaseName("expensesdb")
             .withUsername("user")
             .withPassword("userpwd")
             .withTmpFs(java.util.Collections.singletonMap("/var/lib/mysql", "rw"))
-            .withStartupTimeout(Duration.ofMinutes(5));
+            .withStartupTimeout(Duration.ofMinutes(5))
+            .withConnectTimeoutSeconds(300);
 
     private MysqlExpenseRepository repository;
     private MysqlDataSource dataSource;

@@ -1,6 +1,5 @@
 package com.personalexpense.bdd;
 
-import com.personalexpense.app.ExpenseApp;
 import com.personalexpense.module.ExpenseModule;
 import com.personalexpense.view.ExpenseSwingView;
 import com.google.inject.Guice;
@@ -24,6 +23,7 @@ import java.time.Duration;
 
 public class ExpenseManagementSteps {
 
+    @SuppressWarnings("resource")
     private static MySQLContainer<?> mysql;
     private FrameFixture window;
 
@@ -35,7 +35,8 @@ public class ExpenseManagementSteps {
                     .withUsername("user")
                     .withPassword("userpwd")
                     .withTmpFs(java.util.Collections.singletonMap("/var/lib/mysql", "rw"))
-                    .withStartupTimeout(Duration.ofMinutes(5));
+                    .withStartupTimeout(Duration.ofMinutes(5))
+                    .withConnectTimeoutSeconds(300);
             mysql.start();
         }
 

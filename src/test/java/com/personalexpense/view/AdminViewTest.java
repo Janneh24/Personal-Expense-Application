@@ -16,7 +16,6 @@ import javax.inject.Provider;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,7 +62,6 @@ class AdminViewTest {
 
     @Test
     void testCreateUserSuccess() {
-        User uNew = new User(0L, "newuser", "newpwd", "USER", true);
         User uSaved = new User(2L, "newuser", "newpwd", "USER", true);
         
         when(userService.createUser(any(User.class))).thenReturn(uSaved);
