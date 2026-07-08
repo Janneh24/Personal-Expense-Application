@@ -40,7 +40,7 @@ mvn clean verify
 ### 3. Run the Application
 
 ```bash
-mvn exec:java "-Dexec.mainClass=com.personalexpense.app.ExpenseApp"
+mvn exec:java "-Dexec.mainClass=com.personalexpense.app.ExpenseApp" "-Ddb.port=3307"
 ```
 
 ## Project Structure
