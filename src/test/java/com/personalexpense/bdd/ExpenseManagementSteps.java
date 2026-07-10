@@ -59,17 +59,19 @@ public class ExpenseManagementSteps {
                 new ExpenseModule(mysql.getHost(), mysql.getFirstMappedPort(), mysql.getDatabaseName(), mysql.getUsername(), mysql.getPassword())
         );
 
+        com.personalexpense.service.UserService userService = injector.getInstance(com.personalexpense.service.UserService.class);
+        com.personalexpense.model.User user = new com.personalexpense.model.User(0L, "bdd_user", "pwd", "USER", true);
+        try {
+            user = userService.createUser(user);
+        } catch (Exception e) {
+            // User might already exist, fetch it
+            user = injector.getInstance(com.personalexpense.repository.UserRepository.class).findByUsername("bdd_user");
+        }
+        final com.personalexpense.model.User finalUser = user;
+
         ExpenseSwingView view = GuiActionRunner.execute(() -> {
-            com.personalexpense.service.UserService userService = injector.getInstance(com.personalexpense.service.UserService.class);
-            com.personalexpense.model.User user = new com.personalexpense.model.User(0L, "bdd_user", "pwd", "USER", true);
-            try {
-                user = userService.createUser(user);
-            } catch (Exception e) {
-                // User might already exist, fetch it
-                user = injector.getInstance(com.personalexpense.repository.UserRepository.class).findByUsername("bdd_user");
-            }
             ExpenseSwingView v = injector.getInstance(ExpenseSwingView.class);
-            v.setCurrentUser(user);
+            v.setCurrentUser(finalUser);
             return v;
         });
         window = new FrameFixture(view);
