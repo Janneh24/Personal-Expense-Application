@@ -1,7 +1,7 @@
 package com.personalexpense.view;
 
 import com.personalexpense.model.User;
-import com.personalexpense.service.UserService;
+import com.personalexpense.controller.UserController;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -24,7 +24,7 @@ public class LoginView extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private final transient UserService userService;
+    private final transient UserController userController;
     private final transient Provider<ExpenseSwingView> expenseViewProvider;
     private final transient Provider<AdminView> adminViewProvider;
 
@@ -36,10 +36,10 @@ public class LoginView extends JFrame {
     private JLabel errorLabel;
 
     @Inject
-    public LoginView(UserService userService, 
+    public LoginView(UserController userController, 
                      Provider<ExpenseSwingView> expenseViewProvider, 
                      Provider<AdminView> adminViewProvider) {
-        this.userService = userService;
+        this.userController = userController;
         this.expenseViewProvider = expenseViewProvider;
         this.adminViewProvider = adminViewProvider;
         
@@ -132,7 +132,7 @@ public class LoginView extends JFrame {
         boolean isAdminSelected = adminRadio.isSelected();
         
         try {
-            User user = userService.authenticate(username, password);
+            User user = userController.authenticate(username, password);
             String selectedRole = isAdminSelected ? "ADMIN" : "USER";
             
             if (!user.getRole().equalsIgnoreCase(selectedRole)) {

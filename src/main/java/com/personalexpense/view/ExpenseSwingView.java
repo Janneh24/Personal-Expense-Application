@@ -3,7 +3,7 @@ package com.personalexpense.view;
 import com.personalexpense.model.Category;
 import com.personalexpense.model.Expense;
 import com.personalexpense.model.User;
-import com.personalexpense.service.ExpenseService;
+import com.personalexpense.controller.ExpenseController;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -34,7 +34,7 @@ public class ExpenseSwingView extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private final transient ExpenseService expenseService;
+    private final transient ExpenseController expenseController;
     private final transient Provider<LoginView> loginViewProvider;
     private transient User currentUser;
 
@@ -57,8 +57,8 @@ public class ExpenseSwingView extends JFrame {
     private JLabel errorLabel;
 
     @Inject
-    public ExpenseSwingView(ExpenseService expenseService, Provider<LoginView> loginViewProvider) {
-        this.expenseService = expenseService;
+    public ExpenseSwingView(ExpenseController expenseController, Provider<LoginView> loginViewProvider) {
+        this.expenseController = expenseController;
         this.loginViewProvider = loginViewProvider;
         initComponents();
         layoutComponents();
@@ -67,8 +67,8 @@ public class ExpenseSwingView extends JFrame {
         refreshCategoryCombo();
     }
 
-    public ExpenseSwingView(ExpenseService expenseService) {
-        this(expenseService, null);
+    public ExpenseSwingView(ExpenseController expenseController) {
+        this(expenseController, null);
     }
 
     public void setCurrentUser(User user) {
@@ -237,11 +237,11 @@ public class ExpenseSwingView extends JFrame {
             if (currentUser != null) {
                 expense.setUserId(currentUser.getId());
             }
-            Expense saved = expenseService.addExpense(expense);
+            Expense saved = expenseController.addExpense(expense);
 
             Category selectedCategory = (Category) categoryCombo.getSelectedItem();
             if (selectedCategory != null && selectedCategory.getId() > 0) {
-                expenseService.addCategoryToExpense(saved.getId(), selectedCategory.getId());
+                expenseController.addCategoryToExpense(saved.getId(), selectedCategory.getId());
             }
 
             refreshExpenseTable();
@@ -268,16 +268,16 @@ public class ExpenseSwingView extends JFrame {
             if (currentUser != null) {
                 expense.setUserId(currentUser.getId());
             }
-            expenseService.updateExpense(expense);
+            expenseController.updateExpense(expense);
 
-            Expense existing = expenseService.getExpenseById(id);
+            Expense existing = expenseController.getExpenseById(id);
             for (Category cat : existing.getCategories()) {
-                expenseService.removeCategoryFromExpense(id, cat.getId());
+                expenseController.removeCategoryFromExpense(id, cat.getId());
             }
 
             Category selectedCategory = (Category) categoryCombo.getSelectedItem();
             if (selectedCategory != null && selectedCategory.getId() > 0) {
-                expenseService.addCategoryToExpense(id, selectedCategory.getId());
+                expenseController.addCategoryToExpense(id, selectedCategory.getId());
             }
 
             refreshExpenseTable();
@@ -296,7 +296,7 @@ public class ExpenseSwingView extends JFrame {
                 return;
             }
             long id = (long) tableModel.getValueAt(selectedRow, 0);
-            expenseService.deleteExpense(id);
+            expenseController.deleteExpense(id);
             refreshExpenseTable();
             clearInputFields();
             clearError();
@@ -308,7 +308,7 @@ public class ExpenseSwingView extends JFrame {
     private void generateReport() {
         long userId = (currentUser != null) ? currentUser.getId() : 0L;
         try {
-            String report = expenseService.generateReport(userId);
+            String report = expenseController.generateReport(userId);
             Object[] options = {"Save as PDF", "Close"};
             int choice = JOptionPane.showOptionDialog(
                 this, 
@@ -324,9 +324,9 @@ public class ExpenseSwingView extends JFrame {
             if (choice == 0) {
                 List<Expense> expenses;
                 if (currentUser != null) {
-                    expenses = expenseService.getExpensesByUserId(currentUser.getId());
+                    expenses = expenseController.getExpensesByUserId(currentUser.getId());
                 } else {
-                    expenses = expenseService.getAllExpenses();
+                    expenses = expenseController.getAllExpenses();
                 }
                 saveReportToPdf(expenses, currentUser != null ? currentUser.getUsername() : "user");
             }
@@ -361,7 +361,7 @@ public class ExpenseSwingView extends JFrame {
         try {
             Category category = new Category();
             category.setName(categoryNameField.getText());
-            expenseService.addCategory(category);
+            expenseController.addCategory(category);
             refreshCategoryCombo();
             categoryNameField.setText("");
             clearError();
@@ -383,7 +383,7 @@ public class ExpenseSwingView extends JFrame {
                 return;
             }
             long expenseId = (long) tableModel.getValueAt(selectedRow, 0);
-            expenseService.addCategoryToExpense(expenseId, selectedCategory.getId());
+            expenseController.addCategoryToExpense(expenseId, selectedCategory.getId());
             refreshCategoryList();
             clearError();
         } catch (RuntimeException ex) {
@@ -397,9 +397,9 @@ public class ExpenseSwingView extends JFrame {
         try {
             List<Expense> expenses;
             if (currentUser != null) {
-                expenses = expenseService.getExpensesByUserId(currentUser.getId());
+                expenses = expenseController.getExpensesByUserId(currentUser.getId());
             } else {
-                expenses = expenseService.getAllExpenses();
+                expenses = expenseController.getAllExpenses();
             }
             for (Expense expense : expenses) {
                 tableModel.addRow(new Object[]{
@@ -418,7 +418,7 @@ public class ExpenseSwingView extends JFrame {
         categoryCombo.removeAllItems();
         categoryCombo.addItem(new Category(0L, "None"));
         try {
-            List<Category> categories = expenseService.getAllCategories();
+            List<Category> categories = expenseController.getAllCategories();
             for (Category category : categories) {
                 if (category.getId() > 0) {
                     categoryCombo.addItem(category);
@@ -435,7 +435,7 @@ public class ExpenseSwingView extends JFrame {
         if (selectedRow >= 0) {
             try {
                 long expenseId = (long) tableModel.getValueAt(selectedRow, 0);
-                Expense expense = expenseService.getExpenseById(expenseId);
+                Expense expense = expenseController.getExpenseById(expenseId);
                 for (Category category : expense.getCategories()) {
                     categoryListModel.addElement(category);
                 }
@@ -470,7 +470,7 @@ public class ExpenseSwingView extends JFrame {
 
             try {
                 long expenseId = (long) tableModel.getValueAt(selectedRow, 0);
-                Expense expense = expenseService.getExpenseById(expenseId);
+                Expense expense = expenseController.getExpenseById(expenseId);
                 List<Category> categories = expense.getCategories();
                 if (!categories.isEmpty()) {
                     Category cat = categories.get(0);

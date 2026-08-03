@@ -1,4 +1,4 @@
-package com.personalexpense.service;
+package com.personalexpense.controller;
 
 import com.personalexpense.model.Category;
 import com.personalexpense.model.Expense;
@@ -11,7 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class ExpenseService {
+public class ExpenseController {
 
     private static final String CATEGORY_NAME_ERROR = "Category name cannot be null or empty";
     private static final String HTML_TR_END = "</tr>";
@@ -23,7 +23,7 @@ public class ExpenseService {
     private final CategoryRepository categoryRepository;
 
     @Inject
-    public ExpenseService(ExpenseRepository expenseRepository, CategoryRepository categoryRepository) {
+    public ExpenseController(ExpenseRepository expenseRepository, CategoryRepository categoryRepository) {
         this.expenseRepository = expenseRepository;
         this.categoryRepository = categoryRepository;
     }

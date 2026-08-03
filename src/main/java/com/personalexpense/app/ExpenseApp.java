@@ -32,7 +32,7 @@ public class ExpenseApp {
         int port = Integer.parseInt(System.getProperty("db.port", "3306"));
         String database = System.getProperty("db.name", "expensesdb");
         String user = System.getProperty("db.user", "user");
-        String password = System.getProperty("db.password", "userpwd");
+        String password = System.getProperty("db.password", "");
 
         Injector injector = Guice.createInjector(
             new ExpenseModule(host, port, database, user, password)

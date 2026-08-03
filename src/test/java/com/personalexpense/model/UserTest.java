@@ -16,13 +16,13 @@ class UserTest {
 
         user.setId(2L);
         user.setUsername("user1");
-        user.setPassword("userpwd");
+        user.setPassword("");
         user.setRole("USER");
         user.setEnabled(false);
 
         assertThat(user.getId()).isEqualTo(2L);
         assertThat(user.getUsername()).isEqualTo("user1");
-        assertThat(user.getPassword()).isEqualTo("userpwd");
+        assertThat(user.getPassword()).isEqualTo("");
         assertThat(user.getRole()).isEqualTo("USER");
         assertThat(user.isEnabled()).isFalse();
     }

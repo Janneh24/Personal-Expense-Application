@@ -2,8 +2,8 @@ package com.personalexpense.view;
 
 import com.personalexpense.model.User;
 import com.personalexpense.model.Expense;
-import com.personalexpense.service.UserService;
-import com.personalexpense.service.ExpenseService;
+import com.personalexpense.controller.UserController;
+import com.personalexpense.controller.ExpenseController;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -32,8 +32,8 @@ public class AdminView extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    private final transient UserService userService;
-    private final transient ExpenseService expenseService;
+    private final transient UserController userController;
+    private final transient ExpenseController expenseController;
     private final transient Provider<LoginView> loginViewProvider;
 
     private JTable userTable;
@@ -51,11 +51,11 @@ public class AdminView extends JFrame {
     private JLabel errorLabel;
 
     @Inject
-    public AdminView(UserService userService, 
-                     ExpenseService expenseService, 
+    public AdminView(UserController userController, 
+                     ExpenseController expenseController, 
                      Provider<LoginView> loginViewProvider) {
-        this.userService = userService;
-        this.expenseService = expenseService;
+        this.userController = userController;
+        this.expenseController = expenseController;
         this.loginViewProvider = loginViewProvider;
 
         initComponents();
@@ -173,7 +173,7 @@ public class AdminView extends JFrame {
             user.setRole((String) roleCombo.getSelectedItem());
             user.setEnabled(true);
             
-            userService.createUser(user);
+            userController.createUser(user);
             refreshUserTable();
             clearInputFields();
             clearError();
@@ -198,14 +198,14 @@ public class AdminView extends JFrame {
             user.setRole((String) roleCombo.getSelectedItem());
             
             // Keep existing enabled status
-            User existing = userService.getAllUsers().stream()
+            User existing = userController.getAllUsers().stream()
                     .filter(u -> u.getId() == id)
                     .findFirst().orElse(null);
             if (existing != null) {
                 user.setEnabled(existing.isEnabled());
             }
 
-            userService.updateUser(user);
+            userController.updateUser(user);
             refreshUserTable();
             clearInputFields();
             clearError();
@@ -222,7 +222,7 @@ public class AdminView extends JFrame {
                 return;
             }
             long id = (long) tableModel.getValueAt(selectedRow, 0);
-            userService.deleteUser(id);
+            userController.deleteUser(id);
             refreshUserTable();
             clearInputFields();
             clearError();
@@ -239,7 +239,7 @@ public class AdminView extends JFrame {
                 return;
             }
             long id = (long) tableModel.getValueAt(selectedRow, 0);
-            userService.disableUser(id);
+            userController.disableUser(id);
             refreshUserTable();
             clearError();
         } catch (IllegalArgumentException ex) {
@@ -255,7 +255,7 @@ public class AdminView extends JFrame {
                 return;
             }
             long id = (long) tableModel.getValueAt(selectedRow, 0);
-            userService.enableUser(id);
+            userController.enableUser(id);
             refreshUserTable();
             clearError();
         } catch (IllegalArgumentException ex) {
@@ -272,7 +272,7 @@ public class AdminView extends JFrame {
         long id = (long) tableModel.getValueAt(selectedRow, 0);
         String username = (String) tableModel.getValueAt(selectedRow, 1);
         try {
-            String report = expenseService.generateReport(id);
+            String report = expenseController.generateReport(id);
             Object[] options = {"Save as PDF", "Close"};
             int choice = JOptionPane.showOptionDialog(
                 this, 
@@ -286,7 +286,7 @@ public class AdminView extends JFrame {
             );
             
             if (choice == 0) {
-                List<Expense> expenses = expenseService.getExpensesByUserId(id);
+                List<Expense> expenses = expenseController.getExpensesByUserId(id);
                 saveReportToPdf(expenses, username);
             }
             clearError();
@@ -325,7 +325,7 @@ public class AdminView extends JFrame {
     public void refreshUserTable() {
         tableModel.setRowCount(0);
         try {
-            List<User> users = userService.getAllUsers();
+            List<User> users = userController.getAllUsers();
             for (User user : users) {
                 tableModel.addRow(new Object[]{
                     user.getId(),
@@ -349,7 +349,7 @@ public class AdminView extends JFrame {
             usernameField.setText((String) tableModel.getValueAt(selectedRow, 1));
             try {
                 long userId = (long) tableModel.getValueAt(selectedRow, 0);
-                User user = userService.getAllUsers().stream()
+                User user = userController.getAllUsers().stream()
                         .filter(u -> u.getId() == userId)
                         .findFirst().orElse(null);
                 if (user != null) {

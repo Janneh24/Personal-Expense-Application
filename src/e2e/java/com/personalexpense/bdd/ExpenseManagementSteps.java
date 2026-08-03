@@ -33,7 +33,7 @@ public class ExpenseManagementSteps {
             mysql = new MySQLContainer<>("mysql:8.0")
                     .withDatabaseName("expensesdb")
                     .withUsername("user")
-                    .withPassword("userpwd")
+                    .withEnv("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
                     .withTmpFs(java.util.Collections.singletonMap("/var/lib/mysql", "rw"))
                     .withStartupTimeout(Duration.ofMinutes(5))
                     .withConnectTimeoutSeconds(300);
@@ -59,10 +59,10 @@ public class ExpenseManagementSteps {
                 new ExpenseModule(mysql.getHost(), mysql.getFirstMappedPort(), mysql.getDatabaseName(), mysql.getUsername(), mysql.getPassword())
         );
 
-        com.personalexpense.service.UserService userService = injector.getInstance(com.personalexpense.service.UserService.class);
+        com.personalexpense.controller.UserController userController = injector.getInstance(com.personalexpense.controller.UserController.class);
         com.personalexpense.model.User user = new com.personalexpense.model.User(0L, "bdd_user", "pwd", "USER", true);
         try {
-            user = userService.createUser(user);
+            user = userController.createUser(user);
         } catch (Exception e) {
             // User might already exist, fetch it
             user = injector.getInstance(com.personalexpense.repository.UserRepository.class).findByUsername("bdd_user");

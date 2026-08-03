@@ -27,7 +27,7 @@ class MysqlExpenseRepositoryIT {
     public static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
             .withDatabaseName("expensesdb")
             .withUsername("user")
-            .withPassword("userpwd")
+            .withEnv("MYSQL_ALLOW_EMPTY_PASSWORD", "yes")
             .withTmpFs(java.util.Collections.singletonMap("/var/lib/mysql", "rw"))
             .withStartupTimeout(Duration.ofMinutes(5))
             .withConnectTimeoutSeconds(300);

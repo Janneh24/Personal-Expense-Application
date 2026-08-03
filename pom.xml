@@ -24,7 +24,7 @@
             **/app/**,**/module/**,**/view/**,**/util/**,**/repository/**
         </sonar.exclusions>
         <sonar.test.exclusions>
-            **/app/**,**/module/**,**/view/**,**/util/**,**/repository/**,**/bdd/**,**/model/**,**/service/**
+            **/app/**,**/module/**,**/view/**,**/util/**,**/repository/**,**/bdd/**,**/model/**,**/controller/**
         </sonar.test.exclusions>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.build.directory}/site/jacoco/jacoco.xml
@@ -145,6 +145,17 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>skip-mutation</id>
+            <properties>
+                <pitest.skip>true</pitest.skip>
+            </properties>
+        </profile>
+    </profiles>
+
+
+
     <build>
         <plugins>
             <!-- Maven Surefire for unit tests -->
@@ -157,8 +168,8 @@
                     <includes>
                         <include>**/*Test.java</include>
                         <include>**/*Tests.java</include>
-                        <include>**/*IT.java</include>
-                        <include>**/*Runner.java</include>
+                        
+                        
                     </includes>
                 </configuration>
             </plugin>
@@ -204,7 +215,51 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <!-- Pitest for mutation testing -->
+            
+            <!-- Build Helper -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>add-it-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals><goal>add-test-source</goal></goals>
+                        <configuration>
+                            <sources><source>src/it/java</source></sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-e2e-source</id>
+                        <phase>generate-test-sources</phase>
+                        <goals><goal>add-test-source</goal></goals>
+                        <configuration>
+                            <sources><source>src/e2e/java</source></sources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>add-e2e-resource</id>
+                        <phase>generate-test-resources</phase>
+                        <goals><goal>add-test-resource</goal></goals>
+                        <configuration>
+                            <resources><resource><directory>src/e2e/resources</directory></resource></resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Failsafe -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <goals><goal>integration-test</goal><goal>verify</goal></goals>
+                    </execution>
+                </executions>
+            </plugin>
+<!-- Pitest for mutation testing -->
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -212,7 +267,7 @@
                 <configuration>
                     <targetClasses>
                         <param>com.personalexpense.model.*</param>
-                        <param>com.personalexpense.service.*</param>
+                        <param>com.personalexpense.controller.*</param>
                     </targetClasses>
                     <targetTests>
                         <param>com.personalexpense.*Test</param>

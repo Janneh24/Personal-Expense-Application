@@ -1,7 +1,7 @@
 package com.personalexpense.view;
 
 import com.personalexpense.model.User;
-import com.personalexpense.service.UserService;
+import com.personalexpense.controller.UserController;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.AfterEach;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 class LoginViewTest {
 
     @Mock
-    private UserService userService;
+    private UserController userController;
 
     @Mock
     private Provider<ExpenseSwingView> expenseViewProvider;
@@ -38,7 +38,7 @@ class LoginViewTest {
 
     @BeforeEach
     void setUp() {
-        loginView = GuiActionRunner.execute(() -> new LoginView(userService, expenseViewProvider, adminViewProvider));
+        loginView = GuiActionRunner.execute(() -> new LoginView(userController, expenseViewProvider, adminViewProvider));
         window = new FrameFixture(loginView);
         window.show();
     }
@@ -59,7 +59,7 @@ class LoginViewTest {
 
     @Test
     void testLoginValidationError() {
-        when(userService.authenticate("invalid", "pwd"))
+        when(userController.authenticate("invalid", "pwd"))
                 .thenThrow(new IllegalArgumentException("Invalid username or password"));
 
         window.textBox("usernameField").setText("invalid");
@@ -74,7 +74,7 @@ class LoginViewTest {
     @Test
     void testLoginRoleMismatch() {
         User u = new User(1L, "admin", "adminpwd", "ADMIN", true);
-        when(userService.authenticate("admin", "adminpwd")).thenReturn(u);
+        when(userController.authenticate("admin", "adminpwd")).thenReturn(u);
 
         window.textBox("usernameField").setText("admin");
         window.textBox("passwordField").setText("adminpwd");
@@ -88,12 +88,12 @@ class LoginViewTest {
 
     @Test
     void testLoginUserSuccess() {
-        User u = new User(1L, "user1", "userpwd", "USER", true);
-        when(userService.authenticate("user1", "userpwd")).thenReturn(u);
+        User u = new User(1L, "user1", "", "USER", true);
+        when(userController.authenticate("user1", "")).thenReturn(u);
         when(expenseViewProvider.get()).thenReturn(expenseSwingView);
 
         window.textBox("usernameField").setText("user1");
-        window.textBox("passwordField").setText("userpwd");
+        window.textBox("passwordField").setText("");
         GuiActionRunner.execute(() -> window.radioButton("userRadio").target().setSelected(true));
         GuiActionRunner.execute(() -> window.button("loginButton").target().doClick());
 
@@ -105,7 +105,7 @@ class LoginViewTest {
     @Test
     void testLoginAdminSuccess() {
         User u = new User(1L, "admin", "adminpwd", "ADMIN", true);
-        when(userService.authenticate("admin", "adminpwd")).thenReturn(u);
+        when(userController.authenticate("admin", "adminpwd")).thenReturn(u);
         when(adminViewProvider.get()).thenReturn(adminView);
 
         window.textBox("usernameField").setText("admin");

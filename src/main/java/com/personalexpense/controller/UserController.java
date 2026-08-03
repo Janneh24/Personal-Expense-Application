@@ -1,4 +1,4 @@
-package com.personalexpense.service;
+package com.personalexpense.controller;
 
 import com.personalexpense.model.User;
 import com.personalexpense.repository.UserRepository;
@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Locale;
 
-public class UserService {
+public class UserController {
 
     private static final String USERNAME_EMPTY_ERROR = "Username cannot be null or empty";
     private static final String PASSWORD_EMPTY_ERROR = "Password cannot be null or empty";
@@ -17,7 +17,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Inject
-    public UserService(UserRepository userRepository) {
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
